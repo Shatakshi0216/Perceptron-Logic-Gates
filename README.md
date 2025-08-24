@@ -69,7 +69,7 @@ This demo serves as an **educational tool** to explore:
 
 ### 2. Clone Repository  
 ```bash
-git clone https://github.com/your-username/Perceptron-Logic-Gates.git
+git clone https://github.com/shivamr021/Perceptron-Logic-Gates.git
 cd Perceptron-Logic-Gates
 ````
 
