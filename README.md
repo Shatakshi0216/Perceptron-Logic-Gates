@@ -1,91 +1,185 @@
-🧠 Perceptron Logic Gate Challenge
-Live Demo: https://perceptron-logic-gates.streamlit.app
+# 🧠 Perceptron Logic Gate Challenge  
 
-📜 Overview
-This project is a solution to the "Build a Single Neuron" challenge from the DC Hackathon. It features a Perceptron neuron built entirely from scratch using Python and NumPy. The interactive web application, built with Streamlit, allows users to train the neuron on various logic gates (AND, OR, NAND, XOR), visualize the learning process in real-time, and test the trained model with custom inputs.
+🔗 **Live Demo:** [Perceptron Logic Gates App](https://perceptron-logic-gates.streamlit.app)  
 
-The demo serves as an educational tool to explore the fundamentals of neural networks, the concept of linear separability, and the limitations of a single neuron.
+---
 
-✨ Features
-This application includes several unique features designed to provide an intuitive and insightful user experience:
+## 📜 Overview  
+This project is a solution to the **"Build a Single Neuron" challenge** from the DC Hackathon.  
+It features a **Perceptron neuron built entirely from scratch** using Python and NumPy.  
 
-Perceptron Built From Scratch: The core Perceptron class is implemented using only NumPy, demonstrating a fundamental understanding of the neuron's architecture and learning mechanism.
+The interactive web application, built with **Streamlit**, allows users to:  
+- Train the neuron on various logic gates (**AND, OR, NAND, XOR**)  
+- Visualize the learning process in real-time  
+- Test the trained model with custom inputs  
 
-Interactive Training: Users can configure the training process by selecting the logic gate, number of epochs, and the learning rate, allowing them to experiment with different hyperparameters.
+This demo serves as an **educational tool** to explore:  
+- Fundamentals of neural networks  
+- Concept of **linear separability**  
+- **Limitations** of a single neuron  
 
-Live Animated Learning: Instead of just showing a final result, the application animates the decision boundary's adjustments across each epoch. This provides a clear visual representation of how the neuron "learns" to classify data.
+---
 
-Analysis of Linear Separability: The app automatically analyzes the training outcome, explaining why the neuron succeeds on linearly separable problems (AND, OR, NAND) and why it fails on non-linearly separable problems (XOR).
+## ✨ Features  
 
-The "XOR Solver" Explanation: For the XOR gate, the app provides a clear, theoretical explanation of how a Multi-Layer Perceptron (MLP) overcomes the limitations of a single neuron by combining multiple decision boundaries to solve complex problems.
+✅ **Perceptron Built From Scratch**  
+- Implemented using only NumPy  
+- Demonstrates the neuron's architecture and learning mechanism  
 
-Live Prediction: After a model is successfully trained, a new UI section appears, allowing users to input their own values (0 or 1) and get an instant prediction from the neuron they just trained.
+✅ **Interactive Training**  
+- Configure logic gate, epochs, and learning rate  
+- Experiment with hyperparameters to observe learning behavior  
 
-🔧 Technical Deep Dive
-Why the Perceptron Learning Rule?
-For this challenge, we used the classic Perceptron Learning Rule. This was a deliberate choice for several reasons:
+✅ **Live Animated Learning**  
+- Visualizes decision boundary updates across epochs  
+- Clearly shows how the neuron "learns"  
 
-Historical Significance: It's the original learning algorithm proposed by Frank Rosenblatt in 1957 and is the simplest, most direct way to train a single neuron.
+✅ **Linear Separability Analysis**  
+- Explains success on linearly separable gates (AND, OR, NAND)  
+- Explains failure on non-linearly separable gates (XOR)  
 
-Simplicity and Clarity: The rule is incredibly intuitive: if the prediction is wrong, nudge the weights and bias slightly in the direction that would have made the prediction correct. This is easy to implement and understand from first principles.
+✅ **XOR Solver Explanation**  
+- Theoretical explanation of how an **MLP (Multi-Layer Perceptron)** overcomes XOR limitations  
 
-Guaranteed Convergence: For linearly separable data, the Perceptron Learning Rule is mathematically proven to converge to a correct solution in a finite number of steps.
+✅ **Live Predictions**  
+- After training, users can input **custom 0/1 values**  
+- Instant predictions from the trained neuron  
 
-Why Not Gradient Descent and a Cost Function?
-While Gradient Descent is the backbone of modern deep learning, it is not suitable for a simple Perceptron that uses a step activation function (like ours does). Here's why:
+---
 
-A step function is not continuously differentiable. Its derivative is zero everywhere except at the point of the step, where it is undefined.
+## 🔧 Technical Deep Dive  
 
-Gradient Descent relies on calculating the gradient (derivative) of a cost function with respect to the weights. Since our activation function's derivative is almost always zero, the gradient would also be zero.
+### Why the Perceptron Learning Rule?  
+- **Historical Significance** → Proposed by Frank Rosenblatt in 1957, the first neural learning algorithm.  
+- **Simplicity** → Easy to implement and understand: update weights when predictions are wrong.  
+- **Convergence Guarantee** → For linearly separable data, guaranteed to converge in finite steps.  
 
-A zero gradient means the model receives no information about which direction to update the weights, and therefore, it cannot learn.
+### Why Not Gradient Descent?  
+- Uses a **step activation function**, which is **non-differentiable**.  
+- Derivative = 0 almost everywhere → gradient vanishes.  
+- Perceptron Learning Rule sidesteps this problem → updates based on **raw error (target - prediction)**.  
 
-The Perceptron Learning Rule cleverly sidesteps this problem by not relying on gradients. It updates weights based on the raw error (target - prediction), providing a simple yet effective learning mechanism for this specific type of neuron.
+---
 
-🚀 How to Run Locally
-To run this application on your local machine, please follow these steps:
+## 🚀 How to Run Locally  
 
-1. Prerequisites:
+### 1. Prerequisites  
+- Python **3.7+**  
+- Git  
 
-Python 3.7 or higher
-
-Git
-
-2. Clone the Repository:
-
+### 2. Clone Repository  
+```bash
 git clone https://github.com/your-username/Perceptron-Logic-Gates.git
 cd Perceptron-Logic-Gates
+````
 
-3. Create a Virtual Environment (Recommended):
+### 3. Create Virtual Environment (Recommended)
 
-# For Windows
+```bash
+# Windows
 python -m venv venv
 venv\Scripts\activate
 
-# For macOS/Linux
+# macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
+```
 
-4. Install Dependencies:
-The requirements.txt file contains all the necessary packages.
+### 4. Install Dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-5. Run the Streamlit App:
+### 5. Run the Streamlit App
 
+```bash
 streamlit run app.py
+```
 
-The application should now be open and running in your web browser!
+The app should open in your browser automatically 🎉
 
-📁 File Structure
-The repository is organized to separate the core model logic from the application interface, which is a standard best practice.
+---
 
+## 📁 File Structure
+
+```
 Perceptron-Logic-Gates/
-├── .gitignore          # Ignores unnecessary files
-├── README.md           # This file
-├── requirements.txt    # Project dependencies (streamlit, numpy, matplotlib)
-├── app.py              # The main file for the Streamlit application
+├── .gitignore             # Ignore unnecessary files
+├── README.md              # Project documentation
+├── requirements.txt       # Dependencies (streamlit, numpy, matplotlib)
+├── app.py                 # Main Streamlit application
 └── perceptron_logic_gates/
-    ├── __init__.py     # Makes this directory a Python package
-    ├── perceptron.py   # Contains the Perceptron class (the model)
-    └── gates.py        # Defines the logic gate datasets
+    ├── __init__.py        # Makes this a Python package
+    ├── perceptron.py      # Perceptron class (model logic)
+    └── gates.py           # Logic gate datasets
+```
+
+---
+
+## 📊 Example Visuals
+
+Here’s what you’ll see in the app:
+
+* Decision boundary evolving per epoch
+* Final trained classification regions
+* Explanations for success/failure depending on gate type
+
+---
+
+## 📚 Learning Outcomes
+
+Through this project, you will:
+
+* Understand **how a Perceptron works**
+* See **why XOR cannot be solved** by a single neuron
+* Gain intuition about **linear separability**
+* Experiment with **training dynamics** interactively
+
+---
+
+## 🛠️ Tech Stack
+
+* **Python** (Core implementation)
+* **NumPy** (Matrix operations & model logic)
+* **Matplotlib** (Decision boundary visualization)
+* **Streamlit** (Interactive web app)
+
+---
+
+## 🚩 Future Improvements
+
+* ✅ Add **Multi-Layer Perceptron (MLP)** implementation for XOR
+* ✅ Include **downloadable training logs**
+* ✅ Add support for **custom datasets** beyond logic gates
+* ✅ Provide **step-by-step math explanations** alongside training visuals
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! 🎉
+
+1. Fork the repo
+2. Create a new branch (`feature-xyz`)
+3. Commit your changes
+4. Push the branch & create a PR
+
+---
+
+## 🧑‍💻 Author
+
+**Shivam Rathod**
+🔗 [GitHub](https://github.com/shivamr021) • [LinkedIn](https://linkedin.com/in/shatakshitiwari017)
+**Shatakshi Tiwari**
+🔗 [GitHub](https://github.com/Shatakshi0216) • [LinkedIn](https://linkedin.com/in/shivamrathod021)
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+You are free to use, modify, and distribute it with attribution.
+
+---
+
