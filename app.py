@@ -14,14 +14,17 @@ st.write(
 )
 
 # --- Initialize Session State ---
-if 'last_run_was_failed_xor' not in st.session_state:
-    st.session_state.last_run_was_failed_xor = False
+if 'trained_perceptron' not in st.session_state:
+    st.session_state.trained_perceptron = None
+if 'last_run_info' not in st.session_state:
+    st.session_state.last_run_info = {}
 if 'show_xor_solution' not in st.session_state:
     st.session_state.show_xor_solution = False
 
 def reset_state():
     """Callback function to reset all relevant states."""
-    st.session_state.last_run_was_failed_xor = False
+    st.session_state.trained_perceptron = None
+    st.session_state.last_run_info = {}
     st.session_state.show_xor_solution = False
 
 # --- Sidebar for User Input ---
@@ -59,21 +62,17 @@ else:
     # --- TWO-COLUMN LAYOUT FOR TRAINING AND RESULTS ---
     col1, col2 = st.columns([1, 1])
 
-    with col1:
-        subheader_placeholder = st.empty()
-        plot_placeholder = st.empty()
-
-    with col2:
-        analysis_placeholder = st.empty()
-        results_placeholder = st.empty()
-        xor_button_placeholder = st.empty()
-
+    # --- ACTION: Training Button ---
     if st.sidebar.button("🚀 Train Neuron"):
         reset_state() # Reset state before a new training run
+        
+        with col1:
+            st.subheader(f"Training Animation: {selected_gate} Gate")
+            plot_placeholder = st.empty()
 
-        subheader_placeholder.subheader(f"Training Animation: {selected_gate} Gate")
         y = LOGIC_GATES[selected_gate]
         p = Perceptron(input_size=2, lr=lr)
+        total_error = 0
 
         # Main training loop
         for epoch in range(epochs):
@@ -85,43 +84,75 @@ else:
                 p.bias += p.lr * error
                 total_error += abs(error)
 
+            # Animation Frame Generation
             fig, ax = plt.subplots(figsize=(7, 6))
             colors = ['blue' if target == 0 else 'red' for target in y]
             ax.scatter(X[:, 0], X[:, 1], c=colors, s=100, alpha=0.9, edgecolors='k')
-
             x_vals = np.array([-0.5, 1.5])
             if p.weight[1] != 0:
                 y_vals = (-p.weight[0] * x_vals - p.bias) / p.weight[1]
                 ax.plot(x_vals, y_vals, '--', color='gray', label='Decision Boundary')
             elif p.weight[0] != 0:
                 ax.axvline(x=-p.bias / p.weight[0], linestyle='--', color='gray', label='Decision Boundary')
-
             ax.set_xlim([-0.5, 1.5]); ax.set_ylim([-0.5, 1.5])
             ax.set_title(f"Epoch: {epoch + 1}/{epochs} | Total Error: {total_error}")
             ax.set_xlabel("Input 1"); ax.set_ylabel("Input 2")
             ax.grid(True, which='both', linestyle='--', linewidth=0.5); ax.legend()
-
             plot_placeholder.pyplot(fig)
             plt.close(fig)
 
             if total_error == 0:
-                st.success(f"Convergence reached at Epoch {epoch + 1}!")
                 break
-
             time.sleep(0.25)
+        
+        # After training, save the results to session state
+        st.session_state.trained_perceptron = p
+        st.session_state.last_run_info = {
+            'gate': selected_gate,
+            'y': y,
+            'total_error': total_error
+        }
+        st.rerun()
 
-        # --- Populate Analysis and Results Placeholders ---
-        with analysis_placeholder.container():
+    # --- DISPLAY: Results and Prediction UI (runs if a model is trained) ---
+    if st.session_state.trained_perceptron:
+        p = st.session_state.trained_perceptron
+        info = st.session_state.last_run_info
+        y = info['y']
+
+        # Display the final, static plot
+        with col1:
+            st.subheader(f"Final State: {info['gate']} Gate")
+            fig, ax = plt.subplots(figsize=(7, 6))
+            colors = ['blue' if target == 0 else 'red' for target in y]
+            ax.scatter(X[:, 0], X[:, 1], c=colors, s=100, alpha=0.9, edgecolors='k')
+            x_vals = np.array([-0.5, 1.5])
+            if p.weight[1] != 0:
+                y_vals = (-p.weight[0] * x_vals - p.bias) / p.weight[1]
+                ax.plot(x_vals, y_vals, '--', color='gray', label='Decision Boundary')
+            elif p.weight[0] != 0:
+                ax.axvline(x=-p.bias / p.weight[0], linestyle='--', color='gray', label='Decision Boundary')
+            ax.set_xlim([-0.5, 1.5]); ax.set_ylim([-0.5, 1.5])
+            ax.set_title(f"Final Decision Boundary")
+            ax.set_xlabel("Input 1"); ax.set_ylabel("Input 2")
+            ax.grid(True, which='both', linestyle='--', linewidth=0.5); ax.legend()
+            st.pyplot(fig)
+            plt.close(fig)
+
+        # Display analysis, results, and prediction UI
+        with col2:
             st.subheader("Analysis")
-            if selected_gate == "XOR" and total_error > 0:
+            if info['gate'] == "XOR" and info['total_error'] > 0:
                 st.error(
                     "**The Perceptron failed to learn the XOR gate.** A single straight line cannot "
                     "separate the red and blue points, proving the problem is not linearly separable."
                 )
-                st.session_state.last_run_was_failed_xor = True
-            elif total_error == 0:
+                if st.button("💡 Can we solve XOR?"):
+                    st.session_state.show_xor_solution = True
+                    st.rerun()
+            elif info['total_error'] == 0:
                 st.success(
-                    f"**The Perceptron successfully learned the {selected_gate} gate.** "
+                    f"**The Perceptron successfully learned the {info['gate']} gate.** "
                     "The decision boundary perfectly separates the two classes."
                 )
             else:
@@ -130,7 +161,6 @@ else:
                     "Try increasing epochs or adjusting the learning rate."
                 )
 
-        with results_placeholder.container():
             st.markdown("<h3 style='margin-top: -15px;'>Final Results</h3>", unsafe_allow_html=True)
             predictions = np.array([p.predict(i) for i in X])
             accuracy = np.sum(predictions == y) / len(y) * 100
@@ -141,12 +171,16 @@ else:
             st.markdown(table)
             st.write(f"**Final Weights:** `{np.round(p.weight, 2)}` | **Final Bias:** `{p.bias:.2f}`")
 
-    # --- XOR SOLVER BUTTON ---
-    if st.session_state.last_run_was_failed_xor:
-        if xor_button_placeholder.button("💡 Can we solve XOR?"):
-            st.session_state.show_xor_solution = True
-            st.session_state.last_run_was_failed_xor = False
-            st.rerun()
+            # Live prediction section
+            st.subheader("Test the Trained Neuron")
+            test_col1, test_col2 = st.columns(2)
+            input1 = test_col1.selectbox("Input 1", (0, 1), key="input1")
+            input2 = test_col2.selectbox("Input 2", (0, 1), key="input2")
+            
+            if st.button("Get Prediction"):
+                test_input = np.array([input1, input2])
+                prediction = p.predict(test_input)
+                st.metric(f"Prediction for ({input1}, {input2})", value=prediction)
 
     # Show initial message if no button has been clicked
     if not st.sidebar.is_touched:
