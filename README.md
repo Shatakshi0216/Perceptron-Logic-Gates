@@ -169,9 +169,9 @@ Contributions are welcome! 🎉
 
 ## 🧑‍💻 Author
 
-**Shivam Rathod**
+-**Shivam Rathod**
 🔗 [GitHub](https://github.com/shivamr021) • [LinkedIn](https://linkedin.com/in/shatakshitiwari017)
-**Shatakshi Tiwari**
+-**Shatakshi Tiwari**
 🔗 [GitHub](https://github.com/Shatakshi0216) • [LinkedIn](https://linkedin.com/in/shivamrathod021)
 
 ---
