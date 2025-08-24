@@ -104,8 +104,14 @@ if st.sidebar.button("🚀 Train Neuron"):
         
         # Use markdown with inline CSS to reduce the top margin
         st.markdown("<h3 style='margin-top: -15px;'>Final Results</h3>", unsafe_allow_html=True)
-        predictions = [p.predict(i) for i in X]
-        # Create a markdown table (no pandas)
+        
+        predictions = np.array([p.predict(i) for i in X])
+        
+        # --- Calculate and Display Accuracy ---
+        accuracy = np.sum(predictions == y) / len(y) * 100
+        st.metric(label="Model Accuracy", value=f"{accuracy:.0f}%")
+
+        # Create a markdown table
         table = "| Input 1 | Input 2 | Target | Prediction |\n|---|---|---|---|\n"
         for i in range(len(X)):
             table += f"| {X[i][0]} | {X[i][1]} | {y[i]} | {predictions[i]} |\n"
